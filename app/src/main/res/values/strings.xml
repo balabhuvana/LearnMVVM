@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">LearnMVVM</string>
+    <string name="hello_user">Hello User</string>
+    <string name="insert_user">Insert User</string>
+    <string name="select_all_user">Select All User</string>
+    <string name="delete_all_user">Delete All User</string>
+    <string name="select_specific_user">Select Specfic User</string>
+    <string name="delete_specific_user">Delete specific user</string>
+</resources>
