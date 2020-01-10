@@ -1,9 +1,9 @@
-package com.example.myapplication.repository
+package com.example.learnmvvm.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.myapplication.room.User
-import com.example.myapplication.room.UserDao
+import com.example.learnmvvm.room.User
+import com.example.learnmvvm.room.UserDao
 
 
 class UserRepository(private var userDao: UserDao) {
@@ -32,9 +32,7 @@ class UserRepository(private var userDao: UserDao) {
     }
 
     fun deleteSpecificUser(user: User) {
-        if (user != null) {
-            userDao.deleteUserRecord(user)
-        }
+        userDao.deleteUserRecord(user)
     }
 
     fun deleteAllUser() {

@@ -1,4 +1,4 @@
-package com.example.myapplication.room
+package com.example.learnmvvm.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

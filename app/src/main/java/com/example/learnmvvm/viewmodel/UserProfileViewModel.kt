@@ -1,13 +1,12 @@
-package com.example.myapplication.viewmodel
+package com.example.learnmvvm.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.myapplication.repository.UserRepository
-import com.example.myapplication.room.User
-import com.example.myapplication.room.UserDao
-import com.example.myapplication.room.UserRoomDatabase
+import com.example.learnmvvm.repository.UserRepository
+import com.example.learnmvvm.room.User
+import com.example.learnmvvm.room.UserDao
+import com.example.learnmvvm.room.UserRoomDatabase
 
 class UserProfileViewModel(application: Application) : AndroidViewModel(application) {
     private var userRepository: UserRepository? = null
@@ -25,22 +24,20 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
         userRepository?.insertUserRecord(user)
     }
 
-    fun selectUserListFromRepository() {
+    fun selectUserList() {
         userObserverLiveData = userRepository?.selectUserList()
     }
 
-    fun selectSpecificUserFromRepository(rollNo: Int) {
+    fun selectSpecificUser(rollNo: Int) {
         userLiveData = userRepository?.selectUser(rollNo)
     }
 
-    fun deleteSpecificUserFromRepository(rollNo: Int) {
-        var user = userRepository?.selectUserForDelete(rollNo)
-        Log.i("---> ", "" + user?.userName)
+    fun deleteSpecificUser(rollNo: Int) {
+        val user: User? = userRepository?.selectUserForDelete(rollNo)
         user?.let { userRepository?.deleteSpecificUser(it) }
-
     }
 
-    fun deleteAllUserFromRepository() {
+    fun deleteAllUser() {
         userRepository?.deleteAllUser()
     }
 

@@ -1,4 +1,4 @@
-package com.example.myapplication.fragment
+package com.example.learnmvvm.fragment
 
 
 import android.os.Bundle
@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.learnmvvm.R
-import com.example.myapplication.room.User
-import com.example.myapplication.viewmodel.UserProfileViewModel
+import com.example.learnmvvm.room.User
+import com.example.learnmvvm.viewmodel.UserProfileViewModel
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -51,24 +51,24 @@ class UserProfileFragment : Fragment() {
         }
 
         btnSelectAllUser.setOnClickListener {
-            userProfileViewModel.selectUserListFromRepository()
+            userProfileViewModel.selectUserList()
             observeAllUserData(userProfileViewModel)
         }
 
         btnSelectSpecificUser.setOnClickListener {
-            userProfileViewModel.selectSpecificUserFromRepository(5)
+            userProfileViewModel.selectSpecificUser(7)
             observeSpecificUser(userProfileViewModel)
         }
 
         btnDeleteSpecificUser.setOnClickListener {
             GlobalScope.launch {
-                userProfileViewModel.deleteSpecificUserFromRepository(5)
+                userProfileViewModel.deleteSpecificUser(7)
             }
         }
 
         btnDeleteAllUser.setOnClickListener {
             GlobalScope.launch {
-                userProfileViewModel.deleteAllUserFromRepository()
+                userProfileViewModel.deleteAllUser()
             }
         }
 

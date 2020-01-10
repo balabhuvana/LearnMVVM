@@ -1,9 +1,9 @@
-package com.example.myapplication.activity
+package com.example.learnmvvm.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.learnmvvm.R
-import com.example.myapplication.fragment.UserProfileFragment
+import com.example.learnmvvm.fragment.UserProfileFragment
 
 class UserProfileActivity : AppCompatActivity() {
 
