@@ -3,6 +3,8 @@ package com.example.learnmvvm.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.example.learnmvvm.network.UserModel
+import com.example.learnmvvm.network.UserModelRoot
 import com.example.learnmvvm.repository.UserRepository
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.room.UserDao
@@ -12,6 +14,7 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
     private var userRepository: UserRepository? = null
     private var userObserverLiveData: LiveData<List<User>>? = null
     private var userLiveData: LiveData<User>? = null
+    private var userModelRoot: LiveData<UserModelRoot>? = null
 
     init {
         val userRoomDatabase: UserRoomDatabase =
@@ -20,7 +23,7 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
         userRepository = UserRepository(userDao)
     }
 
-    fun insertUserRecord(user: User){
+    fun insertUserRecord(user: User) {
         userRepository?.insertUserRecord(user)
     }
 
@@ -30,6 +33,10 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
 
     fun selectSpecificUser(rollNo: Int) {
         userLiveData = userRepository?.selectUser(rollNo)
+    }
+
+    fun selectUserFromNetwork() {
+        userModelRoot = userRepository?.fetchUserDataFromNetwork()
     }
 
     fun deleteSpecificUser(rollNo: Int) {
@@ -47,5 +54,9 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
 
     fun getUserObservable(): LiveData<User>? {
         return userLiveData
+    }
+
+    fun getUserRootModelFromNetworkObservable(): LiveData<UserModelRoot>? {
+        return userModelRoot
     }
 }

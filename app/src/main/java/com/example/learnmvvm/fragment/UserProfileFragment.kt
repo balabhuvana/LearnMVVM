@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.learnmvvm.R
+import com.example.learnmvvm.network.UserModel
+import com.example.learnmvvm.network.UserModelRoot
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.viewmodel.UserProfileViewModel
 import kotlinx.android.synthetic.main.fragment_user_profile.*
@@ -67,9 +69,12 @@ class UserProfileFragment : Fragment() {
         }
 
         btnDeleteAllUser.setOnClickListener {
-            GlobalScope.launch {
+            /*GlobalScope.launch {
                 userProfileViewModel.deleteAllUser()
-            }
+            }*/
+            userProfileViewModel.selectUserFromNetwork()
+            observeGetUserRootFromNetwork(userProfileViewModel)
+
         }
 
     }
@@ -99,6 +104,20 @@ class UserProfileFragment : Fragment() {
                             Log.i("Place : ", "" + user?.userPlace)
                         }
                     }
+                }
+            })
+    }
+
+    private fun observeGetUserRootFromNetwork(userProfileViewModel: UserProfileViewModel) {
+        userProfileViewModel.getUserRootModelFromNetworkObservable()
+            ?.observe(viewLifecycleOwner, object : Observer<UserModelRoot> {
+                override fun onChanged(t: UserModelRoot?) {
+                    val userModelRoot: UserModel? = t?.data
+                    Log.i("-----> ", "" + userModelRoot!!.id)
+                    Log.i("-----> ", "" + userModelRoot.firstName)
+                    Log.i("-----> ", "" + userModelRoot.lastName)
+                    Log.i("-----> ", "" + userModelRoot.email)
+                    Log.i("-----> ", "" + userModelRoot.avatar)
                 }
             })
     }

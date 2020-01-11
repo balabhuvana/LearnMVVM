@@ -1,9 +1,15 @@
 package com.example.learnmvvm.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.learnmvvm.network.RetrofitService
+import com.example.learnmvvm.network.UserModelRoot
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.room.UserDao
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class UserRepository(private var userDao: UserDao) {
@@ -12,6 +18,8 @@ class UserRepository(private var userDao: UserDao) {
         MutableLiveData<List<User>>()
 
     private var userLiveData: LiveData<User>? = null
+
+    var retrofitService = RetrofitService()
 
     fun insertUserRecord(user: User) {
         userDao.insertUser(user)
@@ -37,5 +45,23 @@ class UserRepository(private var userDao: UserDao) {
 
     fun deleteAllUser() {
         userDao.deleteAllUser()
+    }
+
+    fun fetchUserDataFromNetwork(): LiveData<UserModelRoot> {
+
+        var userModelRootMutableLiveData: MutableLiveData<UserModelRoot> = MutableLiveData()
+        var callUserModel: Call<UserModelRoot> = retrofitService.userApi.getUser()
+
+        callUserModel.enqueue(object : Callback<UserModelRoot> {
+            override fun onFailure(call: Call<UserModelRoot>, t: Throwable) {
+                Log.i("---> ", " onFailure ")
+            }
+
+            override fun onResponse(call: Call<UserModelRoot>, response: Response<UserModelRoot>) {
+                Log.i("---> ", " onResponse ")
+                userModelRootMutableLiveData.postValue(response.body())
+            }
+        })
+        return userModelRootMutableLiveData
     }
 }
