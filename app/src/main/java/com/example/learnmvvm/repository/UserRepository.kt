@@ -3,10 +3,7 @@ package com.example.learnmvvm.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.learnmvvm.network.RetrofitService
-import com.example.learnmvvm.network.UserListModelRoot
-import com.example.learnmvvm.network.UserModel
-import com.example.learnmvvm.network.UserModelRoot
+import com.example.learnmvvm.network.*
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.room.UserDao
 import retrofit2.Call
@@ -21,7 +18,7 @@ class UserRepository(private var userDao: UserDao) {
 
     private var userLiveData: LiveData<User>? = null
 
-    var retrofitService = RetrofitService()
+    private var retrofitService = RetrofitService()
 
     fun insertUserRecord(user: User) {
         userDao.insertUser(user)
@@ -51,8 +48,8 @@ class UserRepository(private var userDao: UserDao) {
 
     fun fetchUserDataFromNetwork(): LiveData<UserModelRoot> {
 
-        var userModelRootMutableLiveData: MutableLiveData<UserModelRoot> = MutableLiveData()
-        var callUserModel: Call<UserModelRoot> = retrofitService.userApi.getUser()
+        val userModelRootMutableLiveData: MutableLiveData<UserModelRoot> = MutableLiveData()
+        val callUserModel: Call<UserModelRoot> = retrofitService.userApi.getUser()
 
         callUserModel.enqueue(object : Callback<UserModelRoot> {
             override fun onFailure(call: Call<UserModelRoot>, t: Throwable) {
@@ -68,8 +65,8 @@ class UserRepository(private var userDao: UserDao) {
     }
 
     fun fetchUserListFromNetwork(): LiveData<UserListModelRoot> {
-        var mutableUserList = MutableLiveData<UserListModelRoot>()
-        var callUserModelList = retrofitService.userApi.getUserList()
+        val mutableUserList = MutableLiveData<UserListModelRoot>()
+        val callUserModelList = retrofitService.userApi.getUserList()
         callUserModelList.enqueue(object : Callback<UserListModelRoot> {
             override fun onFailure(call: Call<UserListModelRoot>, t: Throwable) {
                 Log.i("---> ", " onFailure " + t.localizedMessage)
@@ -84,5 +81,28 @@ class UserRepository(private var userDao: UserDao) {
         })
 
         return mutableUserList
+    }
+
+    fun fetchUserModelPostFromNetwork(userModelForPost: UserModelForPostRequest): LiveData<UserModelForPostResponse> {
+
+        val modelForPostResponse = MutableLiveData<UserModelForPostResponse>()
+
+        val callUserModelForPostRequest =
+            retrofitService.userApi.getUserDetailUsingPost(userModelForPost)
+
+        callUserModelForPostRequest.enqueue(object : Callback<UserModelForPostResponse> {
+            override fun onFailure(call: Call<UserModelForPostResponse>, t: Throwable) {
+                Log.i("---> ", " onFailure " + t.localizedMessage)
+            }
+
+            override fun onResponse(
+                call: Call<UserModelForPostResponse>,
+                response: Response<UserModelForPostResponse>
+            ) {
+                modelForPostResponse.postValue(response.body())
+            }
+        })
+
+        return modelForPostResponse
     }
 }

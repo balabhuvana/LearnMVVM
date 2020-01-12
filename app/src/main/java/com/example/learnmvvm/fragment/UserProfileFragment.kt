@@ -11,9 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.learnmvvm.R
-import com.example.learnmvvm.network.UserListModelRoot
-import com.example.learnmvvm.network.UserModel
-import com.example.learnmvvm.network.UserModelRoot
+import com.example.learnmvvm.network.*
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.viewmodel.UserProfileViewModel
 import kotlinx.android.synthetic.main.fragment_user_profile.*
@@ -70,8 +68,11 @@ class UserProfileFragment : Fragment() {
         }
 
         btnDeleteAllUser.setOnClickListener {
-            userProfileViewModel.fetchUserListFromNetwork()
-            observeGetUserModelListRootFromNetwork(userProfileViewModel)
+            val userModelForPostRequest = UserModelForPostRequest()
+            userModelForPostRequest.userName = "Arunkumar V"
+            userModelForPostRequest.userJob = "Cab Driver"
+            userProfileViewModel.fetchUserModelPostRequestFromNetwork(userModelForPostRequest)
+            observeUserModelPostResponseFromNetwork(userProfileViewModel)
         }
 
     }
@@ -123,14 +124,26 @@ class UserProfileFragment : Fragment() {
         userProfileViewModel.fetchUserListFromNetworkObservable()
             ?.observe(viewLifecycleOwner, object : Observer<UserListModelRoot> {
                 override fun onChanged(t: UserListModelRoot?) {
-                    var userModelList = t?.userModelList
+                    val userModelList = t?.userModelList
                     for (user in userModelList!!) {
-                        Log.i("-----> ", "" + user!!.id)
+                        Log.i("-----> ", "" + user.id)
                         Log.i("-----> ", "" + user.firstName)
                         Log.i("-----> ", "" + user.lastName)
                         Log.i("-----> ", "" + user.email)
                         Log.i("-----> ", "" + user.avatar)
                     }
+                }
+            })
+    }
+
+    private fun observeUserModelPostResponseFromNetwork(userProfileViewModel: UserProfileViewModel) {
+        userProfileViewModel.fetchUserModelPostRequestFromNetworkObservable()
+            ?.observe(viewLifecycleOwner, object : Observer<UserModelForPostResponse> {
+                override fun onChanged(user: UserModelForPostResponse?) {
+                    Log.i("-----> ", "" + user?.userName)
+                    Log.i("-----> ", "" + user?.userJob)
+                    Log.i("-----> ", "" + user?.userId)
+                    Log.i("-----> ", "" + user?.userCreatedAt)
                 }
             })
     }
