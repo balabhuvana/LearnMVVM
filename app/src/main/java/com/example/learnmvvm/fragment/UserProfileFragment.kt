@@ -79,28 +79,25 @@ class UserProfileFragment : Fragment() {
 
     private fun observeSpecificUser(userProfileViewModel: UserProfileViewModel) {
         userProfileViewModel.getUserObservable()
-            ?.observe(viewLifecycleOwner, object : Observer<User> {
-                override fun onChanged(user: User?) {
+            ?.observe(viewLifecycleOwner,
+                Observer<User> { user ->
                     Log.i("ID : ", "" + user?.userId)
                     Log.i("Name : ", "" + user?.userName)
                     Log.i("Age : ", "" + user?.userAge)
                     Log.i("Place : ", "" + user?.userPlace)
-                }
-            })
+                })
     }
 
     private fun observeAllUserData(userProfileViewModel: UserProfileViewModel) {
         userProfileViewModel.getUserListObservable()?.observe(
             viewLifecycleOwner,
-            object : Observer<List<User?>?> {
-                override fun onChanged(@Nullable userList: List<User?>?) {
-                    if (userList != null) {
-                        for (user in userList) {
-                            Log.i("ID : ", "" + user?.userId)
-                            Log.i("Name : ", "" + user?.userName)
-                            Log.i("Age : ", "" + user?.userAge)
-                            Log.i("Place : ", "" + user?.userPlace)
-                        }
+            Observer<List<User?>?> { userList ->
+                if (userList != null) {
+                    for (user in userList) {
+                        Log.i("ID : ", "" + user?.userId)
+                        Log.i("Name : ", "" + user?.userName)
+                        Log.i("Age : ", "" + user?.userAge)
+                        Log.i("Place : ", "" + user?.userPlace)
                     }
                 }
             })
@@ -108,22 +105,21 @@ class UserProfileFragment : Fragment() {
 
     private fun observeGetUserRootFromNetwork(userProfileViewModel: UserProfileViewModel) {
         userProfileViewModel.getUserRootModelFromNetworkObservable()
-            ?.observe(viewLifecycleOwner, object : Observer<UserModelRoot> {
-                override fun onChanged(t: UserModelRoot?) {
+            ?.observe(viewLifecycleOwner,
+                Observer<UserModelRoot> { t ->
                     val userModelRoot: UserModel? = t?.data
                     Log.i("-----> ", "" + userModelRoot!!.id)
                     Log.i("-----> ", "" + userModelRoot.firstName)
                     Log.i("-----> ", "" + userModelRoot.lastName)
                     Log.i("-----> ", "" + userModelRoot.email)
                     Log.i("-----> ", "" + userModelRoot.avatar)
-                }
-            })
+                })
     }
 
     private fun observeGetUserModelListRootFromNetwork(userProfileViewModel: UserProfileViewModel) {
         userProfileViewModel.fetchUserListFromNetworkObservable()
-            ?.observe(viewLifecycleOwner, object : Observer<UserListModelRoot> {
-                override fun onChanged(t: UserListModelRoot?) {
+            ?.observe(viewLifecycleOwner,
+                Observer<UserListModelRoot> { t ->
                     val userModelList = t?.userModelList
                     for (user in userModelList!!) {
                         Log.i("-----> ", "" + user.id)
@@ -132,20 +128,18 @@ class UserProfileFragment : Fragment() {
                         Log.i("-----> ", "" + user.email)
                         Log.i("-----> ", "" + user.avatar)
                     }
-                }
-            })
+                })
     }
 
     private fun observeUserModelPostResponseFromNetwork(userProfileViewModel: UserProfileViewModel) {
         userProfileViewModel.fetchUserModelPostRequestFromNetworkObservable()
-            ?.observe(viewLifecycleOwner, object : Observer<UserModelForPostResponse> {
-                override fun onChanged(user: UserModelForPostResponse?) {
+            ?.observe(viewLifecycleOwner,
+                Observer<UserModelForPostResponse> { user ->
                     Log.i("-----> ", "" + user?.userName)
                     Log.i("-----> ", "" + user?.userJob)
                     Log.i("-----> ", "" + user?.userId)
                     Log.i("-----> ", "" + user?.userCreatedAt)
-                }
-            })
+                })
     }
 }
 
