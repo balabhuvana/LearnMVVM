@@ -3,6 +3,7 @@ package com.example.learnmvvm.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.learnmvvm.cache.UserCache
 import com.example.learnmvvm.network.*
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.room.UserDao
@@ -104,5 +105,33 @@ class UserRepository(private var userDao: UserDao) {
         })
 
         return modelForPostResponse
+    }
+
+    /**
+     * This id we are not actually using for network operation
+     */
+    fun fetchUserDataFromNetworkWithCacheSupport(userId: Int): LiveData<UserModelRoot> {
+
+        val userCache: LiveData<UserModelRoot>? = UserCache.userCacheHashMap.get(userId)
+        if (userCache != null) {
+            Log.i("-----> ", "UserRepository - From Cache")
+            return userCache
+        }
+
+        val userModelRootMutableLiveData: MutableLiveData<UserModelRoot> = MutableLiveData()
+        UserCache.userCacheHashMap.put(userId, userModelRootMutableLiveData)
+        val callUserModel: Call<UserModelRoot> = retrofitService.userApi.getUser()
+
+        callUserModel.enqueue(object : Callback<UserModelRoot> {
+            override fun onFailure(call: Call<UserModelRoot>, t: Throwable) {
+                Log.i("---> ", " onFailure " + t.localizedMessage)
+            }
+
+            override fun onResponse(call: Call<UserModelRoot>, response: Response<UserModelRoot>) {
+                Log.i("-----> ", "UserRepository - From Network")
+                userModelRootMutableLiveData.value = response.body()
+            }
+        })
+        return userModelRootMutableLiveData
     }
 }

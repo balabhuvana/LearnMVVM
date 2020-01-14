@@ -40,6 +40,10 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
         userModelRoot = userRepository?.fetchUserDataFromNetwork()
     }
 
+    fun selectUserFromNetworkWithCacheSupport() {
+        userModelRoot = userRepository?.fetchUserDataFromNetworkWithCacheSupport(2)
+    }
+
     fun fetchUserListFromNetwork() {
         userModelListLiveData = userRepository?.fetchUserListFromNetwork()
     }

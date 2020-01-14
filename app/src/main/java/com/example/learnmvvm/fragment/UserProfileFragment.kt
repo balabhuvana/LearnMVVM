@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 class UserProfileFragment : Fragment() {
 
     private lateinit var userProfileViewModel: UserProfileViewModel
+    private var TAG = UserProfileFragment::class.java.simpleName
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,8 +54,8 @@ class UserProfileFragment : Fragment() {
         }
 
         btnSelectSpecificUser.setOnClickListener {
-            userProfileViewModel.selectSpecificUser(7)
-            observeSpecificUser(userProfileViewModel)
+            userProfileViewModel.selectUserFromNetworkWithCacheSupport()
+            observeGetUserRootFromNetworkSupportCache(userProfileViewModel)
         }
 
         btnDeleteSpecificUser.setOnClickListener {
@@ -109,6 +110,19 @@ class UserProfileFragment : Fragment() {
                     Log.i("-----> ", "" + userModelRoot.lastName)
                     Log.i("-----> ", "" + userModelRoot.email)
                     Log.i("-----> ", "" + userModelRoot.avatar)
+                })
+    }
+
+    private fun observeGetUserRootFromNetworkSupportCache(userProfileViewModel: UserProfileViewModel) {
+        userProfileViewModel.getUserRootModelFromNetworkObservable()
+            ?.observe(viewLifecycleOwner,
+                Observer<UserModelRoot> { t ->
+                    val userModelRoot: UserModel? = t?.data
+                    Log.i(TAG, "" + userModelRoot!!.id)
+                    Log.i(TAG, "" + userModelRoot.firstName)
+                    Log.i(TAG, "" + userModelRoot.lastName)
+                    Log.i(TAG, "" + userModelRoot.email)
+                    Log.i(TAG, "" + userModelRoot.avatar)
                 })
     }
 
