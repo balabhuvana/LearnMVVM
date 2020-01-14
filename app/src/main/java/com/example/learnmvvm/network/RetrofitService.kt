@@ -12,7 +12,7 @@ class RetrofitService {
      *
      * @return The API interface
      */
-    val userApi: UserApi
+    val userApi: UserApiWebService
         get() {
 
             if (retrofit == null) {
@@ -22,6 +22,6 @@ class RetrofitService {
                     .build()
             }
 
-            return retrofit!!.create(UserApi::class.java)
+            return retrofit!!.create(UserApiWebService::class.java)
         }
 }

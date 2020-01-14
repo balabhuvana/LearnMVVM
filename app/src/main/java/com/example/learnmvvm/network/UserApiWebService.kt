@@ -5,7 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface UserApi {
+interface UserApiWebService {
     @GET("api/users/2")
     fun getUser(): Call<UserModelRoot>
 
