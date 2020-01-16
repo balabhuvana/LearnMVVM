@@ -2,6 +2,7 @@ package com.example.learnmvvm.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.learnmvvm.persistance.PersistenceUser
 
 @Dao
 interface UserDao {
@@ -23,4 +24,11 @@ interface UserDao {
 
     @Query("DELETE FROM user_table")
     fun deleteAllUser()
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertPersistenceUser(persistenceUser: PersistenceUser)
+
+    @Query("SELECT * from persistence_user_table")
+    fun retrievePersistenceUser(): LiveData<PersistenceUser>
+
 }

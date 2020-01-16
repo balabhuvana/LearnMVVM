@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.learnmvvm.R
 import com.example.learnmvvm.network.*
+import com.example.learnmvvm.persistance.PersistenceUser
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.viewmodel.UserProfileViewModel
 import kotlinx.android.synthetic.main.fragment_user_profile.*
@@ -72,6 +73,21 @@ class UserProfileFragment : Fragment() {
             observeUserModelPostResponseFromNetwork(userProfileViewModel)
         }
 
+    }
+
+    private fun performInsertPersistenceUserInRoom() {
+        var persistenceUser = PersistenceUser()
+        persistenceUser.firstName = "Arun Salem"
+        persistenceUser.lastName = "V"
+        persistenceUser.email = "arun.v@gmail.com"
+        persistenceUser.id = 90001
+        persistenceUser.avatar = "http://example.com"
+        userProfileViewModel.insertPersistenceUserWithRoom(persistenceUser)
+    }
+
+    private fun performRetrievePersistenceUserFromRoom() {
+        userProfileViewModel.retrievePersistenceUserFromRoom()
+        observePersistenceUserFromRoom(userProfileViewModel)
     }
 
     private fun observeSpecificUser(userProfileViewModel: UserProfileViewModel) {
@@ -150,6 +166,16 @@ class UserProfileFragment : Fragment() {
                     Log.i("-----> ", "" + user?.userId)
                     Log.i("-----> ", "" + user?.userCreatedAt)
                 })
+    }
+
+    private fun observePersistenceUserFromRoom(userProfileViewModel: UserProfileViewModel) {
+        userProfileViewModel.fetchPersistenceUserWithRoomObservable()
+            ?.observe(viewLifecycleOwner, Observer<PersistenceUser> { user: PersistenceUser? ->
+                Log.i("-----> P", "" + user?.id)
+                Log.i("-----> P", "" + user?.firstName)
+                Log.i("-----> P", "" + user?.lastName)
+                Log.i("-----> P", "" + user?.avatar)
+            })
     }
 }
 

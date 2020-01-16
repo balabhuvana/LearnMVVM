@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.example.learnmvvm.network.*
+import com.example.learnmvvm.persistance.PersistenceUser
 import com.example.learnmvvm.repository.UserRepository
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.room.UserDao
@@ -16,6 +17,7 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
     private var userModelRoot: LiveData<UserModelRoot>? = null
     private var userModelListLiveData: LiveData<UserListModelRoot>? = null
     private var userModelForPostResponse: LiveData<UserModelForPostResponse>? = null
+    private var persistenceUserLiveData: LiveData<PersistenceUser>? = null
 
     init {
         val userRoomDatabase: UserRoomDatabase =
@@ -26,6 +28,14 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
 
     fun insertUserRecord(user: User) {
         userRepository?.insertUserRecord(user)
+    }
+
+    fun insertPersistenceUserWithRoom(persistenceUser: PersistenceUser) {
+        userRepository?.insertPersistenceUserInRoom(persistenceUser)
+    }
+
+    fun retrievePersistenceUserFromRoom() {
+        persistenceUserLiveData = userRepository?.retrievePersistenceUserFromRoom()
     }
 
     fun selectUserList() {
@@ -80,5 +90,9 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
 
     fun fetchUserModelPostRequestFromNetworkObservable(): LiveData<UserModelForPostResponse>? {
         return userModelForPostResponse
+    }
+
+    fun fetchPersistenceUserWithRoomObservable(): LiveData<PersistenceUser>? {
+        return persistenceUserLiveData;
     }
 }

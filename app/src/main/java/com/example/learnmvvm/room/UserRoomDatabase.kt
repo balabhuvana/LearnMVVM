@@ -4,8 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.learnmvvm.persistance.PersistenceUser
 
-@Database(entities = [User::class], version = 1, exportSchema = false)
+@Database(
+    entities = [User::class, PersistenceUser::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class UserRoomDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
@@ -25,7 +30,7 @@ abstract class UserRoomDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     UserRoomDatabase::class.java,
-                    "user_database_one"
+                    "user_database_three"
                 ).build()
                 INSTANCE = instance
                 return instance
