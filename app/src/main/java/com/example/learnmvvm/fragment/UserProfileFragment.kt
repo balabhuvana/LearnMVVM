@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.learnmvvm.R
 import com.example.learnmvvm.network.*
 import com.example.learnmvvm.persistance.PersistenceUser
+import com.example.learnmvvm.persistance.PersistenceUserRoot
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.viewmodel.UserProfileViewModel
 import kotlinx.android.synthetic.main.fragment_user_profile.*
@@ -40,13 +41,7 @@ class UserProfileFragment : Fragment() {
 
         userProfileViewModel = ViewModelProvider(this).get(UserProfileViewModel::class.java)
         btnInsert.setOnClickListener {
-            val user = User()
-            user.userName = "Anand Kumar"
-            user.userAge = 31
-            user.userPlace = "Salem"
-            GlobalScope.launch {
-                userProfileViewModel.insertUserRecord(user)
-            }
+            performInsertPersistenceUserRootInRoom()
         }
 
         btnSelectAllUser.setOnClickListener {
@@ -75,6 +70,16 @@ class UserProfileFragment : Fragment() {
 
     }
 
+    fun performInsertUser() {
+        val user = User()
+        user.userName = "Anand Kumar"
+        user.userAge = 31
+        user.userPlace = "Salem"
+        GlobalScope.launch {
+            userProfileViewModel.insertUserRecord(user)
+        }
+    }
+
     private fun performInsertPersistenceUserInRoom() {
         var persistenceUser = PersistenceUser()
         persistenceUser.firstName = "Arun Salem"
@@ -85,9 +90,28 @@ class UserProfileFragment : Fragment() {
         userProfileViewModel.insertPersistenceUserWithRoom(persistenceUser)
     }
 
+    private fun performInsertPersistenceUserRootInRoom() {
+        GlobalScope.launch {
+            var persistenceUserRoot = PersistenceUserRoot()
+            var persistenceUser = PersistenceUser()
+            persistenceUser.firstName = "Arun Salem"
+            persistenceUser.lastName = "V"
+            persistenceUser.email = "arun.v@gmail.com"
+            persistenceUser.id = 90001
+            persistenceUser.avatar = "http://example.com"
+            persistenceUserRoot.data = persistenceUser
+            userProfileViewModel.insertPersistenceUserRootWithRoom(persistenceUserRoot)
+        }
+    }
+
     private fun performRetrievePersistenceUserFromRoom() {
         userProfileViewModel.retrievePersistenceUserFromRoom()
         observePersistenceUserFromRoom(userProfileViewModel)
+    }
+
+    private fun performRetrievePersistenceUserRootFromRoom() {
+        userProfileViewModel.retrievePersistenceUserRootFromRoom()
+        observerRetrievePersistenceUserRootInRoom(userProfileViewModel)
     }
 
     private fun observeSpecificUser(userProfileViewModel: UserProfileViewModel) {
@@ -176,6 +200,20 @@ class UserProfileFragment : Fragment() {
                 Log.i("-----> P", "" + user?.lastName)
                 Log.i("-----> P", "" + user?.avatar)
             })
+    }
+
+    private fun observerRetrievePersistenceUserRootInRoom(userProfileViewModel: UserProfileViewModel) {
+        userProfileViewModel.fetchPersistenceUserRootWithRoomObservable()
+            ?.observe(
+                viewLifecycleOwner,
+                Observer<PersistenceUserRoot> { t: PersistenceUserRoot? ->
+                    val persistenceUserRoot = t?.data
+                    Log.i("-----> PR", "" + persistenceUserRoot?.id)
+                    Log.i("-----> PR", "" + persistenceUserRoot?.firstName)
+                    Log.i("-----> PR", "" + persistenceUserRoot?.lastName)
+                    Log.i("-----> PR", "" + persistenceUserRoot?.email)
+                    Log.i("-----> PR", "" + persistenceUserRoot?.avatar)
+                })
     }
 }
 

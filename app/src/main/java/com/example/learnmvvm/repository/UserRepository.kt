@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.learnmvvm.cache.UserCache
 import com.example.learnmvvm.network.*
 import com.example.learnmvvm.persistance.PersistenceUser
+import com.example.learnmvvm.persistance.PersistenceUserRoot
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.room.UserDao
 import retrofit2.Call
@@ -144,4 +145,13 @@ class UserRepository(private var userDao: UserDao) {
         var persistenceUserLiveData = userDao.retrievePersistenceUser()
         return persistenceUserLiveData
     }
+
+    fun insertPersistenceUserRootInRoom(persistenceUserRoot: PersistenceUserRoot) {
+        userDao.insertPersistenceUserRoot(persistenceUserRoot)
+    }
+
+    fun retrievePersistenceUserRootInRoom(): LiveData<PersistenceUserRoot> {
+        return userDao.retrievePersistenceUserRoot()
+    }
+
 }

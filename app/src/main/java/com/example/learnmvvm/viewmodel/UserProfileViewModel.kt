@@ -3,8 +3,12 @@ package com.example.learnmvvm.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.learnmvvm.network.*
+import com.example.learnmvvm.network.UserListModelRoot
+import com.example.learnmvvm.network.UserModelForPostRequest
+import com.example.learnmvvm.network.UserModelForPostResponse
+import com.example.learnmvvm.network.UserModelRoot
 import com.example.learnmvvm.persistance.PersistenceUser
+import com.example.learnmvvm.persistance.PersistenceUserRoot
 import com.example.learnmvvm.repository.UserRepository
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.room.UserDao
@@ -18,6 +22,7 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
     private var userModelListLiveData: LiveData<UserListModelRoot>? = null
     private var userModelForPostResponse: LiveData<UserModelForPostResponse>? = null
     private var persistenceUserLiveData: LiveData<PersistenceUser>? = null
+    private var persistenceUserRootLiveData: LiveData<PersistenceUserRoot>? = null
 
     init {
         val userRoomDatabase: UserRoomDatabase =
@@ -34,8 +39,16 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
         userRepository?.insertPersistenceUserInRoom(persistenceUser)
     }
 
+    fun insertPersistenceUserRootWithRoom(persistenceUserRoot: PersistenceUserRoot) {
+        userRepository?.insertPersistenceUserRootInRoom(persistenceUserRoot)
+    }
+
     fun retrievePersistenceUserFromRoom() {
         persistenceUserLiveData = userRepository?.retrievePersistenceUserFromRoom()
+    }
+
+    fun retrievePersistenceUserRootFromRoom() {
+        persistenceUserRootLiveData = userRepository?.retrievePersistenceUserRootInRoom()
     }
 
     fun selectUserList() {
@@ -94,5 +107,9 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
 
     fun fetchPersistenceUserWithRoomObservable(): LiveData<PersistenceUser>? {
         return persistenceUserLiveData;
+    }
+
+    fun fetchPersistenceUserRootWithRoomObservable(): LiveData<PersistenceUserRoot>? {
+        return persistenceUserRootLiveData;
     }
 }

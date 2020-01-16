@@ -3,6 +3,7 @@ package com.example.learnmvvm.room
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.learnmvvm.persistance.PersistenceUser
+import com.example.learnmvvm.persistance.PersistenceUserRoot
 
 @Dao
 interface UserDao {
@@ -30,5 +31,11 @@ interface UserDao {
 
     @Query("SELECT * from persistence_user_table")
     fun retrievePersistenceUser(): LiveData<PersistenceUser>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertPersistenceUserRoot(persistenceUserRoot: PersistenceUserRoot)
+
+    @Query("SELECT * from persistence_user_root_table")
+    fun retrievePersistenceUserRoot(): LiveData<PersistenceUserRoot>
 
 }
