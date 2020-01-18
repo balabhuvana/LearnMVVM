@@ -50,4 +50,13 @@
         app:layout_constraintTop_toBottomOf="@id/btnDeleteSpecificUser"
         android:text="@string/delete_all_user" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnForTesting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnDeleteAllUser"
+        android:text="@string/for_testing" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,12 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertUser(user: User)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertPersistenceUser(persistenceUser: PersistenceUser)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertPersistenceUserRoot(persistenceUserRoot: PersistenceUserRoot)
+
     @Query("SELECT * from user_table")
     fun getUserList(): LiveData<List<User>>
 
@@ -20,22 +26,19 @@ interface UserDao {
     @Query("SELECT * from user_table where user_id = :rollNo LIMIT 1")
     fun getUserRecordForDelete(rollNo: Int): User
 
+    @Query("SELECT * from persistence_user_table")
+    fun retrievePersistenceUser(): LiveData<PersistenceUser>
+
+    @Query("SELECT * from persistence_user_root_table")
+    fun retrievePersistenceUserRoot(): LiveData<PersistenceUserRoot>
+
+    @Query("SELECT * from persistence_user_root_table where user_id=:userId LIMIT 1")
+    fun retrievePersistenceUserRootWithUserId(userId: Int): LiveData<PersistenceUserRoot>
+
     @Delete
     fun deleteUserRecord(user: User)
 
     @Query("DELETE FROM user_table")
     fun deleteAllUser()
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertPersistenceUser(persistenceUser: PersistenceUser)
-
-    @Query("SELECT * from persistence_user_table")
-    fun retrievePersistenceUser(): LiveData<PersistenceUser>
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertPersistenceUserRoot(persistenceUserRoot: PersistenceUserRoot)
-
-    @Query("SELECT * from persistence_user_root_table")
-    fun retrievePersistenceUserRoot(): LiveData<PersistenceUserRoot>
 
 }

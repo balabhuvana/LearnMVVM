@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "persistence_user_root_table")
 class PersistenceUserRoot {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "user_root_id")
-    var userId: Int? = 0
+    var userId: Int? = 99999
 
     @SerializedName("data")
     @Embedded

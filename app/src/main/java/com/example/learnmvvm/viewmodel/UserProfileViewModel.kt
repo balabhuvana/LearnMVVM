@@ -23,6 +23,8 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
     private var userModelForPostResponse: LiveData<UserModelForPostResponse>? = null
     private var persistenceUserLiveData: LiveData<PersistenceUser>? = null
     private var persistenceUserRootLiveData: LiveData<PersistenceUserRoot>? = null
+    private var tryPersistenceUserRootLiveDataFromRoom: LiveData<PersistenceUserRoot>? = null
+    private var tryPersistenceUserRootLiveDataFromNetwork: LiveData<PersistenceUserRoot>? = null
 
     init {
         val userRoomDatabase: UserRoomDatabase =
@@ -41,6 +43,20 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
 
     fun insertPersistenceUserRootWithRoom(persistenceUserRoot: PersistenceUserRoot) {
         userRepository?.insertPersistenceUserRootInRoom(persistenceUserRoot)
+    }
+
+    fun tryPersistenceUserRootFromRoom(userId: Int) {
+
+        tryPersistenceUserRootLiveDataFromRoom = userRepository?.tryFetchPersistenceUserRootInRoom()
+
+        // This is for getting record based on user id
+       /* tryPersistenceUserRootLiveDataFromRoom =
+            userRepository?.tryFetchPersistenceUserRootInRoomByUserId(userId)*/
+    }
+
+    fun tryPersistenceUserRootFromNetwork() {
+        tryPersistenceUserRootLiveDataFromNetwork =
+            userRepository?.tryFetchPersistenceUserRootFromNetworkAndInsertIntoRoom()
     }
 
     fun retrievePersistenceUserFromRoom() {
@@ -111,5 +127,13 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
 
     fun fetchPersistenceUserRootWithRoomObservable(): LiveData<PersistenceUserRoot>? {
         return persistenceUserRootLiveData;
+    }
+
+    fun tryFetchPersistenceUserRootFromRoomObservable(): LiveData<PersistenceUserRoot>? {
+        return tryPersistenceUserRootLiveDataFromRoom
+    }
+
+    fun tryFetchPersistenceUserRootFromNetworkObservable(): LiveData<PersistenceUserRoot>? {
+        return tryPersistenceUserRootLiveDataFromNetwork
     }
 }

@@ -9,6 +9,8 @@ import com.example.learnmvvm.persistance.PersistenceUser
 import com.example.learnmvvm.persistance.PersistenceUserRoot
 import com.example.learnmvvm.room.User
 import com.example.learnmvvm.room.UserDao
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -151,7 +153,40 @@ class UserRepository(private var userDao: UserDao) {
     }
 
     fun retrievePersistenceUserRootInRoom(): LiveData<PersistenceUserRoot> {
+        Log.i("-----> ", "XYZ : " + userDao.retrievePersistenceUserRoot().value?.userId)
         return userDao.retrievePersistenceUserRoot()
+    }
+
+    fun tryFetchPersistenceUserRootInRoom(): LiveData<PersistenceUserRoot> {
+        return userDao.retrievePersistenceUserRoot()
+    }
+
+    // This is for getting record based on user id
+    fun tryFetchPersistenceUserRootInRoomByUserId(userId: Int): LiveData<PersistenceUserRoot> {
+        return userDao.retrievePersistenceUserRootWithUserId(userId)
+    }
+
+    fun tryFetchPersistenceUserRootFromNetworkAndInsertIntoRoom(): LiveData<PersistenceUserRoot>? {
+        var persistenceUserRootLiveData: MutableLiveData<PersistenceUserRoot>? = MutableLiveData()
+
+        var callable = retrofitService.userApi.getPersistenceUserRootLiveData()
+        callable.enqueue(object : Callback<PersistenceUserRoot> {
+            override fun onFailure(call: Call<PersistenceUserRoot>, t: Throwable) {
+                Log.i("---> ", " onFailure " + t.localizedMessage)
+            }
+
+            override fun onResponse(
+                call: Call<PersistenceUserRoot>,
+                response: Response<PersistenceUserRoot>
+            ) {
+                var persistenceUserRoot = response.body()
+                persistenceUserRootLiveData!!.value = persistenceUserRoot
+                GlobalScope.launch {
+                    insertPersistenceUserRootInRoom(persistenceUserRoot!!)
+                }
+            }
+        })
+        return persistenceUserRootLiveData
     }
 
 }

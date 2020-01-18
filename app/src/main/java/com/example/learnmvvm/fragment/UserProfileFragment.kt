@@ -50,8 +50,8 @@ class UserProfileFragment : Fragment() {
         }
 
         btnSelectSpecificUser.setOnClickListener {
-            userProfileViewModel.selectUserFromNetworkWithCacheSupport()
-            observeGetUserRootFromNetworkSupportCache(userProfileViewModel)
+            userProfileViewModel.retrievePersistenceUserRootFromRoom()
+            observerRetrievePersistenceUserRootInRoom(userProfileViewModel)
         }
 
         btnDeleteSpecificUser.setOnClickListener {
@@ -66,6 +66,10 @@ class UserProfileFragment : Fragment() {
             userModelForPostRequest.userJob = "Cab Driver"
             userProfileViewModel.fetchUserModelPostRequestFromNetwork(userModelForPostRequest)
             observeUserModelPostResponseFromNetwork(userProfileViewModel)
+        }
+
+        btnForTesting.setOnClickListener {
+            performRetrievePersistenceUserRootFromNetworkOrRoom()
         }
 
     }
@@ -99,6 +103,7 @@ class UserProfileFragment : Fragment() {
             persistenceUser.email = "arun.v@gmail.com"
             persistenceUser.id = 90001
             persistenceUser.avatar = "http://example.com"
+            persistenceUserRoot.userId = 10002
             persistenceUserRoot.data = persistenceUser
             userProfileViewModel.insertPersistenceUserRootWithRoom(persistenceUserRoot)
         }
@@ -112,6 +117,16 @@ class UserProfileFragment : Fragment() {
     private fun performRetrievePersistenceUserRootFromRoom() {
         userProfileViewModel.retrievePersistenceUserRootFromRoom()
         observerRetrievePersistenceUserRootInRoom(userProfileViewModel)
+    }
+
+    // just passing as 99999 as user id
+    private fun performRetrievePersistenceUserRootFromNetworkOrRoom() {
+
+//        userProfileViewModel.tryPersistenceUserRootFromRoom(0)
+
+        // getting record from room based on id
+        userProfileViewModel.tryPersistenceUserRootFromRoom(99999)
+        tryObserverRetrievePersistenceUserRootFromRoomCall(userProfileViewModel)
     }
 
     private fun observeSpecificUser(userProfileViewModel: UserProfileViewModel) {
@@ -213,6 +228,43 @@ class UserProfileFragment : Fragment() {
                     Log.i("-----> PR", "" + persistenceUserRoot?.lastName)
                     Log.i("-----> PR", "" + persistenceUserRoot?.email)
                     Log.i("-----> PR", "" + persistenceUserRoot?.avatar)
+                })
+    }
+
+    private fun tryObserverRetrievePersistenceUserRootFromRoomCall(userProfileViewModel: UserProfileViewModel) {
+        userProfileViewModel.tryFetchPersistenceUserRootFromRoomObservable()
+            ?.observe(
+                viewLifecycleOwner,
+                Observer<PersistenceUserRoot> { t: PersistenceUserRoot? ->
+                    if (t != null) {
+                        val persistenceUser = t?.data
+                        Log.i("-----> Room Call : ", "" + t.userId)
+                        Log.i("-----> Room Call : ", "" + persistenceUser?.id)
+                        Log.i("-----> Room Call : ", "" + persistenceUser?.firstName)
+                        Log.i("-----> Room Call : ", "" + persistenceUser?.lastName)
+                        Log.i("-----> Room Call : ", "" + persistenceUser?.email)
+                        Log.i("-----> Room Call : ", "" + persistenceUser?.avatar)
+                    } else {
+                        Log.i("-----> Try", "No data in room - So calling the network connection :")
+                        userProfileViewModel.tryPersistenceUserRootFromNetwork()
+                        tryObserverRetrievePersistenceUserRootFromNetworkCall(userProfileViewModel)
+                    }
+
+                })
+    }
+
+    private fun tryObserverRetrievePersistenceUserRootFromNetworkCall(userProfileViewModel: UserProfileViewModel) {
+        userProfileViewModel.tryFetchPersistenceUserRootFromNetworkObservable()
+            ?.observe(
+                viewLifecycleOwner,
+                Observer<PersistenceUserRoot> { t: PersistenceUserRoot? ->
+                    val persistenceUser = t?.data
+                    Log.i("-----> Network Call : ", "" + t?.userId)
+                    Log.i("-----> Network Call : ", "" + persistenceUser?.id)
+                    Log.i("-----> Network Call : ", "" + persistenceUser?.firstName)
+                    Log.i("-----> Network Call : ", "" + persistenceUser?.lastName)
+                    Log.i("-----> Network Call : ", "" + persistenceUser?.email)
+                    Log.i("-----> Network Call : ", "" + persistenceUser?.avatar)
                 })
     }
 }

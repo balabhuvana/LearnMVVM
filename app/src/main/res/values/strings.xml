@@ -6,4 +6,5 @@
     <string name="delete_all_user">Delete All User</string>
     <string name="select_specific_user">Select Specfic User</string>
     <string name="delete_specific_user">Delete specific user</string>
+    <string name="for_testing">For Testing</string>
 </resources>

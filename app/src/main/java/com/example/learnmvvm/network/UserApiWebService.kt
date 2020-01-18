@@ -1,5 +1,6 @@
 package com.example.learnmvvm.network
 
+import com.example.learnmvvm.persistance.PersistenceUserRoot
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,4 +15,7 @@ interface UserApiWebService {
 
     @POST("api/users")
     fun getUserDetailUsingPost(@Body userModelForPost: UserModelForPostRequest): Call<UserModelForPostResponse>
+
+    @GET("api/users/2")
+    fun getPersistenceUserRootLiveData(): Call<PersistenceUserRoot>
 }
